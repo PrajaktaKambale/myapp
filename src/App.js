@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Card from "./components/Card";
+import Modal from "./components/Modal";
+import "./App.css"; // or import './styles.scss';
 
-function App() {
+const API_URL =
+  "https://my-json-server.typicode.com/Codeinwp/front-end-internship-api/posts";
+
+const App = () => {
+  const [data, setData] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  useEffect(() => {
+    // Fetch data from the API
+    fetch(API_URL)
+      .then((response) => response.json())
+      .then((data) => setData(data))
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <h1 className="app-title">My React App</h1>
+      <div className="card-list">
+        {data.map((item) => (
+          <Card key={item.id} data={item} />
+        ))}
+      </div>
+      <Modal
+        isOpen={!!selectedItem}
+        title={selectedItem?.title}
+        content={selectedItem?.modalContent}
+        onClose={() => setSelectedItem(null)}
+      />
     </div>
   );
-}
+};
 
 export default App;
